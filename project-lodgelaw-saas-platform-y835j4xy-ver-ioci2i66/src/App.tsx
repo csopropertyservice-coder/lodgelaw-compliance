@@ -1,8 +1,7 @@
-import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet, useLocation } from '@tanstack/react-router'
+import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router'
 import { Toaster } from '@blinkdotnew/ui'
 import { useAuth } from './hooks/useAuth'
 import { DashboardLayout } from './components/DashboardLayout'
-import { blink } from './blink/client'
 import { Loader2 } from 'lucide-react'
 import { Dashboard } from './pages/Dashboard'
 import { Properties } from './pages/Properties'
@@ -10,8 +9,10 @@ import { Documents } from './pages/Documents'
 import { TaxReports } from './pages/TaxReports'
 import { Compliance } from './pages/Compliance'
 import { Settings } from './pages/Settings'
+import { ResolutionCenter } from './pages/ResolutionCenter'
+import { NeighborReport } from './pages/NeighborReport'
+import { blink } from './blink/client'
 
-// Auth gate + layout wrapper — must be inside router context
 function AppShell() {
   const { isAuthenticated, isLoading } = useAuth()
 
@@ -62,7 +63,6 @@ function AppShell() {
   )
 }
 
-// Root Route — hosts Toaster
 const rootRoute = createRootRoute({
   component: () => (
     <>
@@ -72,23 +72,39 @@ const rootRoute = createRootRoute({
   ),
 })
 
-// Layout route — auth gate + DashboardLayout
 const layoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   id: 'layout',
   component: AppShell,
 })
 
-// Page Routes under layout
+// Public route — no auth needed
+const neighborReportRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/report/$propertyId',
+  component: NeighborReport,
+})
+
+// Private routes
 const indexRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/', component: Dashboard })
 const propertiesRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/properties', component: Properties })
 const documentsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/documents', component: Documents })
 const taxReportsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/tax-reports', component: TaxReports })
 const complianceRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/compliance', component: Compliance })
 const settingsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/settings', component: Settings })
+const resolutionCenterRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/resolution-center', component: ResolutionCenter })
 
 const routeTree = rootRoute.addChildren([
-  layoutRoute.addChildren([indexRoute, propertiesRoute, documentsRoute, taxReportsRoute, complianceRoute, settingsRoute])
+  neighborReportRoute,
+  layoutRoute.addChildren([
+    indexRoute,
+    propertiesRoute,
+    documentsRoute,
+    taxReportsRoute,
+    complianceRoute,
+    settingsRoute,
+    resolutionCenterRoute,
+  ])
 ])
 
 const router = createRouter({ routeTree })
@@ -105,18 +121,7 @@ export default function App() {
 
 function ShieldCheck({ className }: { className?: string }) {
   return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="16" 
-      height="16" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
       <path d="m9 12 2 2 4-4" />
     </svg>
