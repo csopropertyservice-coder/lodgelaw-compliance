@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { blink } from '../blink/client'
+import { supabase } from '../lib/supabaseClient'
+import type { User as SupabaseUser } from '@supabase/supabase-js'
 
 export interface User {
   id: string
@@ -7,17 +8,39 @@ export interface User {
   displayName?: string
 }
 
+function mapUser(u: SupabaseUser): User {
+  return {
+    id: u.id,
+    email: u.email ?? '',
+    displayName: u.user_metadata?.full_name ?? u.email ?? '',
+  }
+}
+
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = blink.auth.onAuthStateChanged((state) => {
-      setUser(state.user as User | null)
-      if (!state.isLoading) setIsLoading(false)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ? mapUser(session.user) : null)
+      setIsLoading(false)
     })
-    return unsubscribe
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ? mapUser(session.user) : null)
+      setIsLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
-  return { user, isLoading, isAuthenticated: !!user }
+  const login = () =>
+    supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin },
+    })
+
+  const logout = () => supabase.auth.signOut()
+
+  return { user, isLoading, isAuthenticated: !!user, login, logout }
 }
