@@ -1,31 +1,31 @@
 import { useState, useCallback } from 'react'
-import { blink } from '../blink/client'
+import { supabase } from '../lib/supabaseClient'
 
 export interface Document {
   id: string
-  userId: string
-  propertyId: string
+  user_id: string
+  property_id: string
   type: string
   name: string
-  fileName: string | null
+  file_name: string | null
   url: string
-  expiryDate: string | null
-  fileSize: number | null
+  expiry_date: string | null
+  file_size: number | null
   version: number
   notes: string | null
-  createdAt: string
+  created_at: string
 }
 
 export interface DocumentVersion {
   id: string
-  documentId: string
-  userId: string
+  document_id: string
+  user_id: string
   version: number
   url: string
-  fileName: string
-  fileSize: number | null
+  file_name: string
+  file_size: number | null
   notes: string | null
-  createdAt: string
+  created_at: string
 }
 
 export function useDocuments(userId: string | undefined) {
@@ -37,10 +37,12 @@ export function useDocuments(userId: string | undefined) {
     if (!userId) return
     setIsLoading(true)
     try {
-      const data = await blink.db.documents.list({
-        where: { userId },
-        orderBy: { createdAt: 'desc' }
-      })
+      const { data, error } = await supabase
+        .from('documents')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+      if (error) throw error
       setDocuments(data as Document[])
     } catch (err) {
       console.error('Failed to fetch documents:', err)
@@ -56,40 +58,46 @@ export function useDocuments(userId: string | undefined) {
     if (!userId) throw new Error('Not authenticated')
 
     const tempId = `upload_${Date.now()}`
-    setUploadProgress(p => ({ ...p, [tempId]: 0 }))
+    setUploadProgress(p => ({ ...p, [tempId]: 10 }))
 
-    // Upload file to storage
-    const ext = file.name.split('.').pop()
     const storagePath = `documents/${userId}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
 
-    const { publicUrl } = await blink.storage.upload(file, storagePath, {
-      onProgress: (pct) => setUploadProgress(p => ({ ...p, [tempId]: pct }))
-    })
+    const { error: uploadError } = await supabase.storage
+      .from('lodgelaw-documents')
+      .upload(storagePath, file)
+    if (uploadError) throw uploadError
 
-    setUploadProgress(p => ({ ...p, [tempId]: 100 }))
+    setUploadProgress(p => ({ ...p, [tempId]: 70 }))
 
-    // Save metadata to DB
-    const doc = await blink.db.documents.create({
-      userId,
-      propertyId: meta.propertyId,
-      type: meta.type,
-      name: meta.name,
-      fileName: file.name,
-      url: publicUrl,
-      expiryDate: meta.expiryDate || null,
-      fileSize: file.size,
+    const { data: { publicUrl } } = supabase.storage
+      .from('lodgelaw-documents')
+      .getPublicUrl(storagePath)
+
+    const { data: doc, error: insertError } = await supabase
+      .from('documents')
+      .insert({
+        user_id: userId,
+        property_id: meta.propertyId,
+        type: meta.type,
+        name: meta.name,
+        file_name: file.name,
+        url: publicUrl,
+        expiry_date: meta.expiryDate || null,
+        file_size: file.size,
+        version: 1,
+        notes: meta.notes || null,
+      })
+      .select()
+      .single()
+    if (insertError) throw insertError
+
+    await supabase.from('document_versions').insert({
+      document_id: doc.id,
+      user_id: userId,
       version: 1,
-      notes: meta.notes || null,
-    })
-
-    // Record first version
-    await blink.db.documentVersions.create({
-      documentId: doc.id,
-      userId,
-      version: 1,
       url: publicUrl,
-      fileName: file.name,
-      fileSize: file.size,
+      file_name: file.name,
+      file_size: file.size,
       notes: meta.notes || null,
     })
 
@@ -106,33 +114,40 @@ export function useDocuments(userId: string | undefined) {
     if (!userId) throw new Error('Not authenticated')
 
     const tempId = `ver_${documentId}`
-    setUploadProgress(p => ({ ...p, [tempId]: 0 }))
+    setUploadProgress(p => ({ ...p, [tempId]: 10 }))
 
     const storagePath = `documents/${userId}/${Date.now()}_v${currentVersion + 1}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`
 
-    const { publicUrl } = await blink.storage.upload(file, storagePath, {
-      onProgress: (pct) => setUploadProgress(p => ({ ...p, [tempId]: pct }))
-    })
+    const { error: uploadError } = await supabase.storage
+      .from('lodgelaw-documents')
+      .upload(storagePath, file)
+    if (uploadError) throw uploadError
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('lodgelaw-documents')
+      .getPublicUrl(storagePath)
 
     const newVersion = currentVersion + 1
 
-    // Update document record
-    await blink.db.documents.update(documentId, {
-      url: publicUrl,
-      fileName: file.name,
-      fileSize: file.size,
-      version: newVersion,
-      notes: notes || null,
-    })
+    const { error: updateError } = await supabase
+      .from('documents')
+      .update({
+        url: publicUrl,
+        file_name: file.name,
+        file_size: file.size,
+        version: newVersion,
+        notes: notes || null,
+      })
+      .eq('id', documentId)
+    if (updateError) throw updateError
 
-    // Add version history entry
-    await blink.db.documentVersions.create({
-      documentId,
-      userId,
+    await supabase.from('document_versions').insert({
+      document_id: documentId,
+      user_id: userId,
       version: newVersion,
       url: publicUrl,
-      fileName: file.name,
-      fileSize: file.size,
+      file_name: file.name,
+      file_size: file.size,
       notes: notes || null,
     })
 
@@ -140,14 +155,17 @@ export function useDocuments(userId: string | undefined) {
   }, [userId])
 
   const deleteDocument = useCallback(async (documentId: string) => {
-    await blink.db.documents.delete(documentId)
+    const { error } = await supabase.from('documents').delete().eq('id', documentId)
+    if (error) throw error
   }, [])
 
   const fetchVersions = useCallback(async (documentId: string): Promise<DocumentVersion[]> => {
-    const data = await blink.db.documentVersions.list({
-      where: { documentId },
-      orderBy: { version: 'desc' }
-    })
+    const { data, error } = await supabase
+      .from('document_versions')
+      .select('*')
+      .eq('document_id', documentId)
+      .order('version', { ascending: false })
+    if (error) throw error
     return data as DocumentVersion[]
   }, [])
 
