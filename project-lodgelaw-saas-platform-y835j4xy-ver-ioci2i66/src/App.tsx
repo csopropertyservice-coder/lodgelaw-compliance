@@ -11,10 +11,9 @@ import { Compliance } from './pages/Compliance'
 import { Settings } from './pages/Settings'
 import { ResolutionCenter } from './pages/ResolutionCenter'
 import { NeighborReport } from './pages/NeighborReport'
-import { blink } from './blink/client'
 
 function AppShell() {
-  const { isAuthenticated, isLoading } = useAuth()
+  const { isAuthenticated, isLoading, login } = useAuth()
 
   if (isLoading) {
     return (
@@ -38,7 +37,7 @@ function AppShell() {
               <p className="text-sm text-muted-foreground">Sign in to manage your short-term rentals.</p>
             </div>
             <button
-              onClick={() => blink.auth.login()}
+              onClick={() => login()}
               className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all active:scale-[0.98] shadow-md shadow-primary/20"
             >
               Access Command Center
@@ -78,14 +77,12 @@ const layoutRoute = createRoute({
   component: AppShell,
 })
 
-// Public route — no auth needed
 const neighborReportRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/report/$propertyId',
   component: NeighborReport,
 })
 
-// Private routes
 const indexRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/', component: Dashboard })
 const propertiesRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/properties', component: Properties })
 const documentsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/documents', component: Documents })
