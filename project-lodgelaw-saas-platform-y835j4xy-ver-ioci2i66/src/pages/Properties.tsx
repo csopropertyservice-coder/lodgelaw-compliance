@@ -5,7 +5,7 @@ import {
   Progress, Badge, AutoForm, toast,
   Dialog, DialogContent, DialogHeader, DialogTitle
 } from '@blinkdotnew/ui'
-import { Plus, Home, MapPin, Calendar, ShieldCheck, Info, Sparkles, ChevronDown, ChevronRight } from 'lucide-react'
+import { Plus, Home, MapPin, Calendar, ShieldCheck, Info, Sparkles, ChevronDown, ChevronRight, QrCode, Copy, X } from 'lucide-react'
 import { blink } from '../blink/client'
 import { useAuth } from '../hooks/useAuth'
 import { usePropertyCompliance } from '../hooks/usePropertyCompliance'
@@ -23,6 +23,58 @@ const propertySchema = z.object({
 
 type Property = z.infer<typeof propertySchema> & { id: string; totalNightsRented: number; status: string }
 
+// QR Modal component
+function QRModal({ property, onClose }: { property: Property; onClose: () => void }) {
+  const reportUrl = `${window.location.origin}/report/${property.id}`
+  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(reportUrl)}`
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(reportUrl)
+    toast.success('Link copied to clipboard!')
+  }
+
+  return (
+    <div style={overlayStyles.backdrop} onClick={onClose}>
+      <div style={overlayStyles.modal} onClick={e => e.stopPropagation()}>
+        <div style={overlayStyles.header}>
+          <h2 style={overlayStyles.title}>Neighbor Report QR Code</h2>
+          <button onClick={onClose} style={overlayStyles.closeBtn}><X size={18} /></button>
+        </div>
+        <p style={overlayStyles.subtitle}>
+          Print or display this QR code at <strong>{property.name}</strong>. Neighbors can scan it to submit anonymous reports directly to your Resolution Center.
+        </p>
+        <div style={overlayStyles.qrWrapper}>
+          <img src={qrImageUrl} alt="QR Code" style={overlayStyles.qrImage} />
+        </div>
+        <div style={overlayStyles.linkBox}>
+          <span style={overlayStyles.linkText}>{reportUrl}</span>
+          <button onClick={copyLink} style={overlayStyles.copyBtn}>
+            <Copy size={14} /> Copy
+          </button>
+        </div>
+        <p style={overlayStyles.hint}>
+          💡 Tip: Print this and place it in your welcome binder or on the fridge.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+const overlayStyles: Record<string, React.CSSProperties> = {
+  backdrop: { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' },
+  modal: { background: '#fff', borderRadius: '16px', padding: '32px', maxWidth: '420px', width: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' },
+  header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' },
+  title: { fontSize: '18px', fontWeight: '700', color: '#0f172a', margin: 0 },
+  closeBtn: { background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', padding: '4px' },
+  subtitle: { fontSize: '13px', color: '#64748b', lineHeight: '1.5', marginBottom: '24px' },
+  qrWrapper: { display: 'flex', justifyContent: 'center', marginBottom: '20px', padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' },
+  qrImage: { width: '180px', height: '180px' },
+  linkBox: { display: 'flex', alignItems: 'center', gap: '8px', background: '#f1f5f9', borderRadius: '8px', padding: '10px 12px', marginBottom: '16px' },
+  linkText: { flex: 1, fontSize: '11px', color: '#475569', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  copyBtn: { display: 'flex', alignItems: 'center', gap: '4px', background: '#6366f1', color: '#fff', border: 'none', borderRadius: '6px', padding: '6px 10px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' },
+  hint: { fontSize: '12px', color: '#94a3b8', textAlign: 'center', margin: 0 },
+}
+
 export function Properties() {
   const { user } = useAuth()
   const [properties, setProperties] = useState<Property[]>([])
@@ -30,6 +82,7 @@ export function Properties() {
   const [isLoading, setIsLoading] = useState(true)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+  const [qrProperty, setQrProperty] = useState<Property | null>(null)
   const { analyses, analyzeProperty } = usePropertyCompliance()
 
   const fetchData = async () => {
@@ -80,188 +133,153 @@ export function Properties() {
       accessorKey: 'expand',
       header: '',
       cell: ({ row }: any) => (
-        <button
-          onClick={() => toggleRow(row.original.id)}
-          className="p-1 rounded hover:bg-muted transition-colors text-muted-foreground"
-        >
+        <button onClick={() => toggleRow(row.original.id)} className="p-1 hover:bg-muted rounded">
           {expandedRows.has(row.original.id)
-            ? <ChevronDown className="w-4 h-4" />
-            : <ChevronRight className="w-4 h-4" />}
+            ? <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
         </button>
-      )
+      ),
+      size: 40,
     },
     {
       accessorKey: 'name',
-      header: 'Property Name',
+      header: 'Property',
       cell: ({ row }: any) => (
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
-            <Home className="w-4 h-4 text-primary" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-semibold text-sm">{row.original.name}</span>
-            <span className="text-xs text-muted-foreground flex items-center gap-1">
-              <MapPin className="w-3 h-3" /> {row.original.address}
-            </span>
-          </div>
+        <div className="flex items-center gap-2">
+          <Home className="w-4 h-4 text-muted-foreground" />
+          <span className="font-medium">{row.original.name}</span>
         </div>
-      )
+      ),
+    },
+    {
+      accessorKey: 'address',
+      header: 'Address',
+      cell: ({ row }: any) => (
+        <div className="flex items-center gap-1 text-muted-foreground text-sm">
+          <MapPin className="w-3 h-3" />
+          {row.original.address}
+        </div>
+      ),
     },
     {
       accessorKey: 'licenseNumber',
-      header: 'License #',
+      header: 'License',
       cell: ({ row }: any) => (
-        <Badge
-          variant={row.original.licenseNumber ? 'secondary' : 'destructive'}
-          className="text-[10px] h-5 px-2"
-        >
-          {row.original.licenseNumber || 'Missing License'}
-        </Badge>
-      )
+        row.original.licenseNumber
+          ? <Badge variant="outline" className="font-mono text-xs">{row.original.licenseNumber}</Badge>
+          : <Badge variant="destructive" className="text-xs">Missing</Badge>
+      ),
     },
     {
-      accessorKey: 'nights',
-      header: 'Night Counter',
+      accessorKey: 'totalNightsRented',
+      header: 'Nights Used',
       cell: ({ row }: any) => {
-        const nights = Number(row.original.totalNightsRented || 0)
-        const limit = 90
-        const percentage = Math.min((nights / limit) * 100, 100)
+        const nights = row.original.totalNightsRented || 0
+        const pct = Math.min((nights / 90) * 100, 100)
         return (
-          <div className="w-44 space-y-1.5">
-            <div className="flex justify-between text-[10px] font-bold uppercase tracking-wider">
-              <span className={percentage > 80 ? 'text-destructive' : 'text-muted-foreground'}>
-                {nights} / {limit}
-              </span>
-              <span className="text-muted-foreground">{Math.round(percentage)}%</span>
-            </div>
-            <Progress value={percentage} className="h-1.5" />
+          <div className="flex items-center gap-2 w-32">
+            <Progress value={pct} className="h-1.5 flex-1" />
+            <span className="text-xs text-muted-foreground">{nights}/90</span>
           </div>
         )
-      }
-    },
-    {
-      accessorKey: 'aiScore',
-      header: 'AI Score',
-      cell: ({ row }: any) => {
-        const analysis = analyses[row.original.id]
-        if (!analysis) {
-          return (
-            <button
-              onClick={(e) => { e.stopPropagation(); analyzeProperty(row.original, ordinances) }}
-              className="flex items-center gap-1 text-xs text-accent/70 hover:text-accent transition-colors font-medium"
-            >
-              <Sparkles className="w-3 h-3" /> Run AI
-            </button>
-          )
-        }
-        if (analysis.isLoading) return <span className="text-xs text-muted-foreground animate-pulse">Analyzing…</span>
-        if (!analysis.data) return <span className="text-xs text-muted-foreground">–</span>
-        const score = analysis.data.complianceScore
-        return (
-          <span className={`text-sm font-black ${score >= 80 ? 'text-success' : score >= 50 ? 'text-accent' : 'text-destructive'}`}>
-            {score}<span className="text-xs font-normal text-muted-foreground">/100</span>
-          </span>
-        )
-      }
+      },
     },
     {
       accessorKey: 'status',
       header: 'Status',
       cell: ({ row }: any) => (
-        <Badge variant="outline" className="text-[10px] h-5 px-2 bg-success/5 border-success/20 text-success uppercase tracking-widest">
+        <Badge variant={row.original.status === 'active' ? 'default' : 'secondary'}>
           {row.original.status}
         </Badge>
-      )
-    }
+      ),
+    },
+    {
+      accessorKey: 'actions',
+      header: '',
+      cell: ({ row }: any) => (
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1 text-xs"
+            onClick={() => analyzeProperty(row.original, ordinances)}
+          >
+            <Sparkles className="w-3 h-3" /> Analyze
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1 text-xs"
+            onClick={() => setQrProperty(row.original)}
+          >
+            <QrCode className="w-3 h-3" /> QR Code
+          </Button>
+        </div>
+      ),
+    },
   ]
 
   return (
-    <Page className="animate-fade-in">
-      <PageHeader>
-        <div className="flex justify-between items-start w-full">
+    <>
+      {qrProperty && <QRModal property={qrProperty} onClose={() => setQrProperty(null)} />}
+
+      <Page>
+        <PageHeader>
           <div>
-            <PageTitle className="text-3xl font-bold text-primary">Managed Properties</PageTitle>
-            <PageDescription className="text-muted-foreground mt-1">
-              Track STR units with AI-powered compliance scoring and night limits.
-            </PageDescription>
+            <PageTitle>Properties</PageTitle>
+            <PageDescription>Manage your STR portfolio and compliance status.</PageDescription>
           </div>
           <PageActions>
-            <Button onClick={() => setIsModalOpen(true)} className="bg-primary hover:opacity-90">
-              <Plus className="w-4 h-4 mr-2" /> Add Property
+            <Button onClick={() => setIsModalOpen(true)} className="gap-2">
+              <Plus className="w-4 h-4" /> Add Property
             </Button>
           </PageActions>
-        </div>
-      </PageHeader>
-
-      <PageBody className="mt-8 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { icon: ShieldCheck, label: 'Compliance Status', value: '100% Valid', bg: 'bg-accent/10', color: 'text-accent' },
-            { icon: Calendar, label: 'Peak Season Risk', value: 'Low', bg: 'bg-primary/10', color: 'text-primary' },
-            { icon: Info, label: 'TX Law Check', value: 'Passed', bg: 'bg-muted', color: 'text-muted-foreground' }
-          ].map(({ icon: Icon, label, value, bg, color }) => (
-            <Card key={label} className="border-border shadow-sm bg-card">
-              <CardHeader className="p-4 flex flex-row items-center gap-3">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${bg}`}>
-                  <Icon className={`w-5 h-5 ${color}`} />
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest">{label}</span>
-                  <span className="text-lg font-bold">{value}</span>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
-
-        {properties.length === 0 && !isLoading ? (
-          <EmptyState
-            icon={<Home size={48} />}
-            title="No properties yet"
-            description="Add your first STR unit to begin AI-powered compliance tracking."
-            action={{ label: 'Add Property', onClick: () => setIsModalOpen(true) }}
-          />
-        ) : (
-          <div className="border border-border rounded-xl overflow-hidden shadow-sm bg-card">
-            <DataTable
-              columns={columns}
-              data={properties}
-              loading={isLoading}
-              searchable
-              searchColumn="name"
+        </PageHeader>
+        <PageBody>
+          {isLoading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+            </div>
+          ) : properties.length === 0 ? (
+            <EmptyState
+              icon={<Home className="w-8 h-8" />}
+              title="No properties yet"
+              description="Add your first STR property to start tracking compliance."
+              action={<Button onClick={() => setIsModalOpen(true)}><Plus className="w-4 h-4 mr-2" />Add Property</Button>}
             />
-            {/* Expandable AI panels rendered below each row */}
-            {properties.filter(p => expandedRows.has(p.id)).map(property => (
-              <div key={`expand-${property.id}`} className="border-t border-border bg-muted/20 px-6 py-4">
-                <div className="max-w-2xl">
-                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">
-                    AI Compliance Breakdown — {property.name}
-                  </p>
-                  <PropertyCompliancePanel
-                    propertyId={property.id}
-                    propertyName={property.name}
-                    analysis={analyses[property.id]}
-                    onAnalyze={() => analyzeProperty(property, ordinances)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </PageBody>
+          ) : (
+            <div className="space-y-2">
+              <DataTable columns={columns} data={properties} />
+              {properties.map(property => (
+                expandedRows.has(property.id) && (
+                  <Card key={`panel-${property.id}`} className="border-primary/20 bg-primary/5">
+                    <CardContent className="pt-4">
+                      <PropertyCompliancePanel
+                        property={property}
+                        analysis={analyses[property.id]}
+                        onAnalyze={() => analyzeProperty(property, ordinances)}
+                      />
+                    </CardContent>
+                  </Card>
+                )
+              ))}
+            </div>
+          )}
+        </PageBody>
+      </Page>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add New STR Property</DialogTitle>
+            <DialogTitle>Add New Property</DialogTitle>
           </DialogHeader>
           <AutoForm
             schema={propertySchema}
             onSubmit={handleAddProperty}
-            className="space-y-4"
+            submitLabel="Add Property"
           />
         </DialogContent>
       </Dialog>
-    </Page>
+    </>
   )
 }
