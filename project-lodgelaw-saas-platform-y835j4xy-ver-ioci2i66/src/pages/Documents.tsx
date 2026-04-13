@@ -194,7 +194,7 @@ export function Documents() {
 
       <DocumentUploadModal
         open={isUploadOpen}
-        onClose={() => setIsUploadOpen(false)}
+        onOpenChange={(v) => setIsUploadOpen(v)}
         onUpload={handleUpload}
         properties={properties}
         uploadProgress={uploadProgress}
