@@ -13,6 +13,9 @@ import { ResolutionCenter } from './pages/ResolutionCenter'
 import { NeighborReport } from './pages/NeighborReport'
 import { TaxEstimator } from './pages/TaxEstimator'
 import { LandingPage } from './pages/LandingPage'
+import { GuestPacket } from './pages/GuestPacket'
+import { AlertFeed } from './pages/AlertFeed'
+import { ComplianceReport } from './pages/ComplianceReport'
 
 function AppShell() {
   const { isAuthenticated, isLoading } = useAuth()
@@ -65,6 +68,9 @@ const taxEstimatorRoute = createRoute({ getParentRoute: () => layoutRoute, path:
 const complianceRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/compliance', component: Compliance })
 const settingsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/settings', component: Settings })
 const resolutionCenterRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/resolution-center', component: ResolutionCenter })
+const guestPacketRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/guest-packet', component: GuestPacket })
+const alertFeedRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/alert-feed', component: AlertFeed })
+const complianceReportRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/compliance-report', component: ComplianceReport })
 
 const routeTree = rootRoute.addChildren([
   neighborReportRoute,
@@ -77,6 +83,9 @@ const routeTree = rootRoute.addChildren([
     complianceRoute,
     settingsRoute,
     resolutionCenterRoute,
+    guestPacketRoute,
+    alertFeedRoute,
+    complianceReportRoute,
   ])
 ])
 
