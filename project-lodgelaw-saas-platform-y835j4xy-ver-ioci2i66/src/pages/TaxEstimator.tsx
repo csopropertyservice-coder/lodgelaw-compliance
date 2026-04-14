@@ -162,12 +162,21 @@ export function TaxEstimator() {
 
           <div style={s.field}>
             <label style={s.label}>Month</label>
-            <input
-              type="month"
-              style={s.input}
-              value={monthYear}
-              onChange={e => setMonthYear(e.target.value)}
-            />
+            <select
+  style={s.select}
+  value={monthYear}
+  onChange={e => setMonthYear(e.target.value)}
+>
+  {Array.from({ length: 12 }, (_, i) => {
+    const date = new Date(2026, i, 1)
+    const value = `2026-${String(i + 1).padStart(2, '0')}`
+    return (
+      <option key={value} value={value}>
+        {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+      </option>
+    )
+  })}
+</select>
           </div>
 
           <div style={s.field}>
