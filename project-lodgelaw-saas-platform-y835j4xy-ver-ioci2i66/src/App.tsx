@@ -11,6 +11,7 @@ import { Compliance } from './pages/Compliance'
 import { Settings } from './pages/Settings'
 import { ResolutionCenter } from './pages/ResolutionCenter'
 import { NeighborReport } from './pages/NeighborReport'
+import { TaxEstimator } from './pages/TaxEstimator'
 
 function AppShell() {
   const { isAuthenticated, isLoading, login } = useAuth()
@@ -87,6 +88,7 @@ const indexRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/', c
 const propertiesRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/properties', component: Properties })
 const documentsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/documents', component: Documents })
 const taxReportsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/tax-reports', component: TaxReports })
+const taxEstimatorRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/tax-estimator', component: TaxEstimator })
 const complianceRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/compliance', component: Compliance })
 const settingsRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/settings', component: Settings })
 const resolutionCenterRoute = createRoute({ getParentRoute: () => layoutRoute, path: '/resolution-center', component: ResolutionCenter })
@@ -98,6 +100,7 @@ const routeTree = rootRoute.addChildren([
     propertiesRoute,
     documentsRoute,
     taxReportsRoute,
+    taxEstimatorRoute,
     complianceRoute,
     settingsRoute,
     resolutionCenterRoute,
