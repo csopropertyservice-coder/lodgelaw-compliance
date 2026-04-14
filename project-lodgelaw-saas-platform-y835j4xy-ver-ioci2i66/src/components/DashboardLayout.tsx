@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Settings,
   MessageSquareWarning,
+  Calculator,
 } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
   { path: '/properties',        label: 'Properties',         icon: Home },
   { path: '/documents',         label: 'Documents',          icon: FileText },
   { path: '/tax-reports',       label: 'Tax Reports',        icon: Receipt },
+  { path: '/tax-estimator',     label: 'Tax Estimator',      icon: Calculator },
   { path: '/compliance',        label: 'Compliance',         icon: ShieldCheck },
   { path: '/resolution-center', label: 'Resolution Center',  icon: MessageSquareWarning },
   { path: '/settings',          label: 'Settings',           icon: Settings },
@@ -27,7 +29,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#f8fafc' }}>
-      {/* Sidebar */}
       <aside style={{
         width: '220px',
         minHeight: '100vh',
@@ -40,8 +41,8 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         top: 0,
         left: 0,
         bottom: 0,
+        overflowY: 'auto',
       }}>
-        {/* Logo */}
         <div style={{
           fontSize: '14px',
           fontWeight: '800',
@@ -57,7 +58,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           <span style={{ fontSize: '20px' }}>⚖️</span> LodgeLaw
         </div>
 
-        {/* Nav items */}
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '2px', flex: 1 }}>
           {NAV_ITEMS.map(({ path, label, icon: Icon }) => {
             const isActive = location.pathname === path
@@ -85,7 +85,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        {/* User info at bottom */}
         {user && (
           <div style={{
             borderTop: '1px solid #1e293b',
@@ -142,7 +141,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         )}
       </aside>
 
-      {/* Main content */}
       <main style={{ marginLeft: '220px', flex: 1, padding: '32px', minHeight: '100vh' }}>
         {children}
       </main>
