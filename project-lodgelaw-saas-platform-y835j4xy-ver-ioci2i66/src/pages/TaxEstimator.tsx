@@ -329,7 +329,7 @@ const s: Record<string, React.CSSProperties> = {
   field: { marginBottom: '16px' },
   label: { display: 'block', fontSize: '12px', fontWeight: '600', color: '#374151', marginBottom: '6px' },
   hint: { fontWeight: '400', color: '#94a3b8', marginLeft: '4px' },
-  input: { width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #e2e8f0', fontSize: '14px', boxSizing: 'border-box' as const, color: '#0f172a' },
+  input: { width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #e2e8f0', fontSize: '14px', boxSizing: 'border-box' as const, color: '#0f172a', background: '#ffffff' },
   select: { width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1.5px solid #e2e8f0', fontSize: '14px', boxSizing: 'border-box' as const, color: '#0f172a', background: '#fff' },
   calcBtn: { width: '100%', padding: '12px', borderRadius: '10px', border: 'none', background: '#0f172a', color: '#fff', fontSize: '14px', fontWeight: '700', cursor: 'pointer', marginTop: '8px' },
   empty: { display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', padding: '40px 20px', textAlign: 'center' as const },
