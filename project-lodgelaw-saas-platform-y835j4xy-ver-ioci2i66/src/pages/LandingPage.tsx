@@ -5,8 +5,6 @@ export function LandingPage() {
 
   return (
     <div style={s.wrapper}>
-
-      {/* Nav */}
       <nav style={s.nav}>
         <div style={s.navLogo}>⚖️ LodgeLaw</div>
         <div style={s.navLinks}>
@@ -16,33 +14,22 @@ export function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero */}
       <section style={s.hero}>
         <div style={s.heroInner}>
           <div style={s.heroBadge}>🏆 Built for Texas STR Hosts · 2026 Compliant</div>
-          <h1 style={s.heroTitle}>
-            Stop Guessing.<br />
-            <span style={s.heroAccent}>Stay Compliant.</span>
-          </h1>
-          <p style={s.heroSub}>
-            LodgeLaw is the all-in-one compliance command center for Texas short-term rental hosts.
-            Manage permits, calculate taxes, resolve neighbor disputes — all in one place.
-          </p>
+          <h1 style={s.heroTitle}>Stop Guessing.<br /><span style={s.heroAccent}>Stay Compliant.</span></h1>
+          <p style={s.heroSub}>LodgeLaw is the all-in-one compliance command center for Texas short-term rental hosts. Manage permits, calculate taxes, resolve neighbor disputes — all in one place.</p>
           <div style={s.heroActions}>
-            <button style={s.heroPrimary} onClick={() => login()}>
-              Get Started Free →
-            </button>
+            <button style={s.heroPrimary} onClick={() => login()}>Get Started Free →</button>
             <a href="#features" style={s.heroSecondary}>See Features</a>
           </div>
           <p style={s.heroDisclaimer}>No credit card required · Setup in under 5 minutes</p>
         </div>
-
-        {/* Hero visual */}
         <div style={s.heroCard}>
           <div style={s.heroCardHeader}>
-            <span style={s.heroCardDot('green')} />
-            <span style={s.heroCardDot('yellow')} />
-            <span style={s.heroCardDot('red')} />
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b', display: 'inline-block' }} />
+            <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ef4444', display: 'inline-block' }} />
             <span style={s.heroCardTitle}>Compliance Command Center</span>
           </div>
           <div style={s.heroCardBody}>
@@ -54,14 +41,13 @@ export function LandingPage() {
             ].map((item, i) => (
               <div key={i} style={s.heroCardRow}>
                 <span style={s.heroCardRowLabel}>{item.label}</span>
-                <span style={{ ...s.heroCardRowStatus, color: item.color }}>{item.status}</span>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: item.color }}>{item.status}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Stats bar */}
       <div style={s.statsBar}>
         {[
           { value: '2026', label: 'Texas Compliant' },
@@ -76,45 +62,19 @@ export function LandingPage() {
         ))}
       </div>
 
-      {/* Features */}
       <section id="features" style={s.section}>
         <div style={s.sectionInner}>
           <div style={s.sectionBadge}>Features</div>
           <h2 style={s.sectionTitle}>Everything a Texas STR host needs</h2>
           <p style={s.sectionSub}>Built specifically for the 2026 regulatory landscape in Austin, Houston, and Dallas.</p>
-
           <div style={s.featureGrid}>
             {[
-              {
-                icon: '🛡️',
-                title: 'Compliance Command Center',
-                desc: 'Real-time risk scores by zip code. Track Austin Type 1/2 licenses, Houston registration, and Dallas zoning — all in one dashboard.',
-              },
-              {
-                icon: '📄',
-                title: 'Document Vault',
-                desc: 'Store permits, licenses, and insurance docs with version history and expiry alerts. Never miss a renewal deadline again.',
-              },
-              {
-                icon: '🧮',
-                title: 'HOT Tax Estimator',
-                desc: 'Calculate your Hotel Occupancy Tax liability by month. State (6%) + city rates auto-applied. Export to PDF for your records.',
-              },
-              {
-                icon: '📱',
-                title: 'Neighbor Resolution Center',
-                desc: 'Generate a QR code for each property. Neighbors submit anonymous reports. You manage and resolve them from your dashboard.',
-              },
-              {
-                icon: '🏠',
-                title: 'Portfolio Management',
-                desc: 'Track all your STR properties in one place. Monitor nights rented, license numbers, and per-property compliance status.',
-              },
-              {
-                icon: '🔔',
-                title: 'Smart Alerts',
-                desc: 'Email alerts for expiring documents, new neighbor reports, and upcoming tax deadlines. Stay ahead before issues escalate.',
-              },
+              { icon: '🛡️', title: 'Compliance Command Center', desc: 'Real-time risk scores by zip code. Track Austin Type 1/2 licenses, Houston registration, and Dallas zoning — all in one dashboard.' },
+              { icon: '📄', title: 'Document Vault', desc: 'Store permits, licenses, and insurance docs with version history and expiry alerts. Never miss a renewal deadline again.' },
+              { icon: '🧮', title: 'HOT Tax Estimator', desc: 'Calculate your Hotel Occupancy Tax liability by month. State (6%) + city rates auto-applied. Export to PDF for your records.' },
+              { icon: '📱', title: 'Neighbor Resolution Center', desc: 'Generate a QR code for each property. Neighbors submit anonymous reports. You manage and resolve them from your dashboard.' },
+              { icon: '🏠', title: 'Portfolio Management', desc: 'Track all your STR properties in one place. Monitor nights rented, license numbers, and per-property compliance status.' },
+              { icon: '🔔', title: 'Smart Alerts', desc: 'Email alerts for expiring documents, new neighbor reports, and upcoming tax deadlines. Stay ahead before issues escalate.' },
             ].map((f, i) => (
               <div key={i} style={s.featureCard}>
                 <div style={s.featureIcon}>{f.icon}</div>
@@ -126,7 +86,6 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Compliance highlight */}
       <section style={s.complianceSection}>
         <div style={s.sectionInner}>
           <div style={s.sectionBadge}>2026 Regulations</div>
@@ -150,40 +109,15 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing */}
       <section id="pricing" style={s.section}>
         <div style={s.sectionInner}>
           <div style={s.sectionBadge}>Pricing</div>
           <h2 style={s.sectionTitle}>Simple, transparent pricing</h2>
           <div style={s.pricingGrid}>
             {[
-              {
-                name: 'Starter',
-                price: '$0',
-                period: 'forever',
-                desc: 'Perfect for single-property hosts',
-                features: ['1 property', 'Document vault', 'Tax estimator', 'Compliance dashboard'],
-                cta: 'Get Started Free',
-                highlight: false,
-              },
-              {
-                name: 'Pro',
-                price: '$29',
-                period: 'per month',
-                desc: 'For serious STR investors',
-                features: ['Unlimited properties', 'Resolution Center + QR codes', 'Email alerts', 'PDF tax exports', 'Priority support'],
-                cta: 'Start Pro Trial',
-                highlight: true,
-              },
-              {
-                name: 'Enterprise',
-                price: 'Custom',
-                period: 'contact us',
-                desc: 'For property managers & funds',
-                features: ['Everything in Pro', 'Multi-user access', 'API access', 'Custom ordinance tracking', 'Dedicated support'],
-                cta: 'Contact Sales',
-                highlight: false,
-              },
+              { name: 'Starter', price: '$0', period: 'forever', desc: 'Perfect for single-property hosts', features: ['1 property', 'Document vault', 'Tax estimator', 'Compliance dashboard'], cta: 'Get Started Free', highlight: false },
+              { name: 'Pro', price: '$29', period: 'per month', desc: 'For serious STR investors', features: ['Unlimited properties', 'Resolution Center + QR codes', 'Email alerts', 'PDF tax exports', 'Priority support'], cta: 'Start Pro Trial', highlight: true },
+              { name: 'Enterprise', price: 'Custom', period: 'contact us', desc: 'For property managers & funds', features: ['Everything in Pro', 'Multi-user access', 'API access', 'Custom ordinance tracking', 'Dedicated support'], cta: 'Contact Sales', highlight: false },
             ].map((plan, i) => (
               <div key={i} style={{ ...s.pricingCard, ...(plan.highlight ? s.pricingCardHighlight : {}) }}>
                 {plan.highlight && <div style={s.pricingBadge}>Most Popular</div>}
@@ -195,15 +129,10 @@ export function LandingPage() {
                 <p style={{ ...s.pricingDesc, ...(plan.highlight ? { color: '#c7d2fe' } : {}) }}>{plan.desc}</p>
                 <ul style={s.pricingFeatures}>
                   {plan.features.map((f, j) => (
-                    <li key={j} style={{ ...s.pricingFeature, ...(plan.highlight ? { color: '#e0e7ff' } : {}) }}>
-                      ✓ {f}
-                    </li>
+                    <li key={j} style={{ ...s.pricingFeature, ...(plan.highlight ? { color: '#e0e7ff' } : {}) }}>✓ {f}</li>
                   ))}
                 </ul>
-                <button
-                  style={{ ...s.pricingCta, ...(plan.highlight ? s.pricingCtaHighlight : {}) }}
-                  onClick={() => login()}
-                >
+                <button style={{ ...s.pricingCta, ...(plan.highlight ? s.pricingCtaHighlight : {}) }} onClick={() => login()}>
                   {plan.cta}
                 </button>
               </div>
@@ -212,17 +141,13 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section style={s.ctaSection}>
         <h2 style={s.ctaTitle}>Ready to get compliant?</h2>
         <p style={s.ctaSub}>Join Texas STR hosts who use LodgeLaw to stay ahead of 2026 regulations.</p>
-        <button style={s.ctaBtn} onClick={() => login()}>
-          Access Command Center →
-        </button>
+        <button style={s.ctaBtn} onClick={() => login()}>Access Command Center →</button>
         <p style={s.ctaDisclaimer}>LodgeLaw is an operational tool. Always consult a licensed attorney for legal advice.</p>
       </section>
 
-      {/* Footer */}
       <footer style={s.footer}>
         <div style={s.footerLogo}>⚖️ LodgeLaw</div>
         <p style={s.footerText}>© 2026 LodgeLaw · Built for Texas STR Compliance</p>
@@ -233,10 +158,8 @@ export function LandingPage() {
 
 const s: Record<string, any> = {
   wrapper: { fontFamily: 'system-ui, -apple-system, sans-serif', background: '#ffffff', color: '#0f172a', overflowX: 'hidden' },
-
-  // Nav
   nav: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 40px', borderBottom: '1px solid #f1f5f9', position: 'sticky', top: 0, background: 'rgba(255,255,255,0.95)', backdropFilter: 'blur(8px)', zIndex: 100 },
-  navLogo: { fontSize: '18px', fontWeight: '800', color: '#0f172a ', letterSpacing: '-0.02em' },
+  navLogo: { fontSize: '18px', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.02em' },
   navLinks: { display: 'flex', alignItems: 'center', gap: '32px' },
   navLink: { fontSize: '14px', color: '#64748b', textDecoration: 'none', fontWeight: '500' },
   navCta: { padding: '8px 20px', borderRadius: '8px', border: 'none', background: '#0f172a', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: 'pointer' },
@@ -294,7 +217,7 @@ const s: Record<string, any> = {
   ctaSection: { background: '#f8fafc', borderTop: '1px solid #e2e8f0', padding: '80px 40px', textAlign: 'center' },
   ctaTitle: { fontSize: '36px', fontWeight: '800', letterSpacing: '-0.02em', margin: '0 0 16px 0' },
   ctaSub: { fontSize: '16px', color: '#64748b', margin: '0 0 32px 0' },
-  ctaBtn: { padding: '16px 36px', borderRadius: '12px', border: 'none', background: '#6366f1', color: '#fff', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginBottom: '24px' },
+  ctaBtn: { padding: '16px 36px', borderRadius: '12px', border: 'none', background: '#6366f1', color: '#fff', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginBottom: '24px', display: 'block', margin: '0 auto 24px' },
   ctaDisclaimer: { fontSize: '11px', color: '#94a3b8' },
   footer: { padding: '32px 40px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' },
   footerLogo: { fontSize: '16px', fontWeight: '800', color: '#0f172a' },
