@@ -1,7 +1,4 @@
-import { useAuth } from '../hooks/useAuth'
-
 export function LandingPage() {
-  const { login } = useAuth()
 
   return (
     <div style={s.wrapper}>
@@ -10,7 +7,7 @@ export function LandingPage() {
         <div style={s.navLinks}>
           <a href="#features" style={s.navLink}>Features</a>
           <a href="#pricing" style={s.navLink}>Pricing</a>
-          <button style={s.navCta} onClick={() => login()}>Sign In</button>
+          <a href="/login" style={s.navCta}>Sign In</a>
         </div>
       </nav>
 
@@ -20,7 +17,7 @@ export function LandingPage() {
           <h1 style={s.heroTitle}>Stop Guessing.<br /><span style={s.heroAccent}>Stay Compliant.</span></h1>
           <p style={s.heroSub}>LodgeLaw is the all-in-one compliance command center for Texas short-term rental hosts. Manage permits, calculate taxes, resolve neighbor disputes — all in one place.</p>
           <div style={s.heroActions}>
-            <button style={s.heroPrimary} onClick={() => login()}>Get Started Free →</button>
+            <a href="/login" style={s.heroPrimary}>Get Started Free →</a>
             <a href="#features" style={s.heroSecondary}>See Features</a>
           </div>
           <p style={s.heroDisclaimer}>No credit card required · Setup in under 5 minutes</p>
@@ -73,8 +70,8 @@ export function LandingPage() {
               { icon: '📄', title: 'Document Vault', desc: 'Store permits, licenses, and insurance docs with version history and expiry alerts. Never miss a renewal deadline again.' },
               { icon: '🧮', title: 'HOT Tax Estimator', desc: 'Calculate your Hotel Occupancy Tax liability by month. State (6%) + city rates auto-applied. Export to PDF for your records.' },
               { icon: '📱', title: 'Neighbor Resolution Center', desc: 'Generate a QR code for each property. Neighbors submit anonymous reports. You manage and resolve them from your dashboard.' },
-              { icon: '🏠', title: 'Portfolio Management', desc: 'Track all your STR properties in one place. Monitor nights rented, license numbers, and per-property compliance status.' },
-              { icon: '🔔', title: 'Smart Alerts', desc: 'Email alerts for expiring documents, new neighbor reports, and upcoming tax deadlines. Stay ahead before issues escalate.' },
+              { icon: '🏠', title: 'Guest Packet Generator', desc: 'Create professional printable welcome packets for guests with WiFi, house rules, local tips, and emergency contacts.' },
+              { icon: '📊', title: 'White-label Reports', desc: 'Generate branded compliance reports for HOAs, property managers, or prospective buyers. Export to PDF in one click.' },
             ].map((f, i) => (
               <div key={i} style={s.featureCard}>
                 <div style={s.featureIcon}>{f.icon}</div>
@@ -116,8 +113,8 @@ export function LandingPage() {
           <div style={s.pricingGrid}>
             {[
               { name: 'Basic', price: '$29', period: 'per month', desc: 'Perfect for single-property hosts', features: ['Up to 3 properties', 'Document vault', 'Tax estimator', 'Compliance dashboard', 'Risk Score Engine'], cta: 'Get Started', highlight: false },
-{ name: 'Pro', price: '$79', period: 'per month', desc: 'For serious STR investors', features: ['Unlimited properties', 'Resolution Center + QR codes', 'Email alerts', 'PDF tax exports', 'Guest Packet Generator', 'White-label Reports', 'Priority support'], cta: 'Start Pro Trial', highlight: true },
-{ name: 'Enterprise', price: 'Custom', period: 'contact us', desc: 'For property managers & funds', features: ['Everything in Pro', 'Multi-user access', 'API access', 'Custom ordinance tracking', 'Dedicated support'], cta: 'Contact Sales', highlight: false },
+              { name: 'Pro', price: '$79', period: 'per month', desc: 'For serious STR investors', features: ['Unlimited properties', 'Resolution Center + QR codes', 'Email alerts', 'PDF tax exports', 'Guest Packet Generator', 'White-label Reports', 'Priority support'], cta: 'Start Pro Trial', highlight: true },
+              { name: 'Enterprise', price: 'Custom', period: 'contact us', desc: 'For property managers & funds', features: ['Everything in Pro', 'Multi-user access', 'API access', 'Custom ordinance tracking', 'Dedicated support'], cta: 'Contact Sales', highlight: false },
             ].map((plan, i) => (
               <div key={i} style={{ ...s.pricingCard, ...(plan.highlight ? s.pricingCardHighlight : {}) }}>
                 {plan.highlight && <div style={s.pricingBadge}>Most Popular</div>}
@@ -132,9 +129,9 @@ export function LandingPage() {
                     <li key={j} style={{ ...s.pricingFeature, ...(plan.highlight ? { color: '#e0e7ff' } : {}) }}>✓ {f}</li>
                   ))}
                 </ul>
-                <button style={{ ...s.pricingCta, ...(plan.highlight ? s.pricingCtaHighlight : {}) }} onClick={() => login()}>
+                <a href="/login" style={{ ...s.pricingCta, ...(plan.highlight ? s.pricingCtaHighlight : {}), textDecoration: 'none', display: 'block', textAlign: 'center' }}>
                   {plan.cta}
-                </button>
+                </a>
               </div>
             ))}
           </div>
@@ -144,7 +141,7 @@ export function LandingPage() {
       <section style={s.ctaSection}>
         <h2 style={s.ctaTitle}>Ready to get compliant?</h2>
         <p style={s.ctaSub}>Join Texas STR hosts who use LodgeLaw to stay ahead of 2026 regulations.</p>
-        <button style={s.ctaBtn} onClick={() => login()}>Access Command Center →</button>
+        <a href="/login" style={{ ...s.ctaBtn, textDecoration: 'none', display: 'inline-block' }}>Access Command Center →</a>
         <p style={s.ctaDisclaimer}>LodgeLaw is an operational tool. Always consult a licensed attorney for legal advice.</p>
       </section>
 
@@ -162,7 +159,7 @@ const s: Record<string, any> = {
   navLogo: { fontSize: '18px', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.02em' },
   navLinks: { display: 'flex', alignItems: 'center', gap: '32px' },
   navLink: { fontSize: '14px', color: '#64748b', textDecoration: 'none', fontWeight: '500' },
-  navCta: { padding: '8px 20px', borderRadius: '8px', border: 'none', background: '#0f172a', color: '#fff', fontSize: '14px', fontWeight: '600', cursor: 'pointer' },
+  navCta: { padding: '8px 20px', borderRadius: '8px', background: '#0f172a', color: '#fff', fontSize: '14px', fontWeight: '600', textDecoration: 'none' },
   hero: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '80px 40px', maxWidth: '1200px', margin: '0 auto', gap: '60px', flexWrap: 'wrap' },
   heroInner: { flex: 1, minWidth: '300px' },
   heroBadge: { display: 'inline-block', background: '#f0fdf4', color: '#16a34a', fontSize: '12px', fontWeight: '700', padding: '6px 14px', borderRadius: '20px', marginBottom: '24px', border: '1px solid #bbf7d0' },
@@ -170,7 +167,7 @@ const s: Record<string, any> = {
   heroAccent: { color: '#6366f1' },
   heroSub: { fontSize: '18px', color: '#64748b', lineHeight: '1.6', margin: '0 0 32px 0', maxWidth: '480px' },
   heroActions: { display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' },
-  heroPrimary: { padding: '14px 28px', borderRadius: '10px', border: 'none', background: '#6366f1', color: '#fff', fontSize: '15px', fontWeight: '700', cursor: 'pointer' },
+  heroPrimary: { padding: '14px 28px', borderRadius: '10px', background: '#6366f1', color: '#fff', fontSize: '15px', fontWeight: '700', textDecoration: 'none' },
   heroSecondary: { fontSize: '15px', color: '#6366f1', fontWeight: '600', textDecoration: 'none' },
   heroDisclaimer: { fontSize: '12px', color: '#94a3b8', marginTop: '16px' },
   heroCard: { background: '#0f172a', borderRadius: '16px', padding: '24px', width: '320px', flexShrink: 0, boxShadow: '0 25px 50px rgba(0,0,0,0.15)' },
@@ -217,7 +214,7 @@ const s: Record<string, any> = {
   ctaSection: { background: '#f8fafc', borderTop: '1px solid #e2e8f0', padding: '80px 40px', textAlign: 'center' },
   ctaTitle: { fontSize: '36px', fontWeight: '800', letterSpacing: '-0.02em', margin: '0 0 16px 0' },
   ctaSub: { fontSize: '16px', color: '#64748b', margin: '0 0 32px 0' },
-  ctaBtn: { padding: '16px 36px', borderRadius: '12px', border: 'none', background: '#6366f1', color: '#fff', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginBottom: '24px', display: 'block', margin: '0 auto 24px' },
+  ctaBtn: { padding: '16px 36px', borderRadius: '12px', background: '#6366f1', color: '#fff', fontSize: '16px', fontWeight: '700', cursor: 'pointer', marginBottom: '24px' },
   ctaDisclaimer: { fontSize: '11px', color: '#94a3b8' },
   footer: { padding: '32px 40px', borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' },
   footerLogo: { fontSize: '16px', fontWeight: '800', color: '#0f172a' },
