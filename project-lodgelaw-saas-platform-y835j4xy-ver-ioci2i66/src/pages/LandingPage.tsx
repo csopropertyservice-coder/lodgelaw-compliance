@@ -115,9 +115,9 @@ export function LandingPage() {
           <h2 style={s.sectionTitle}>Simple, transparent pricing</h2>
           <div style={s.pricingGrid}>
             {[
-              { name: 'Starter', price: '$0', period: 'forever', desc: 'Perfect for single-property hosts', features: ['1 property', 'Document vault', 'Tax estimator', 'Compliance dashboard'], cta: 'Get Started Free', highlight: false },
-              { name: 'Pro', price: '$29', period: 'per month', desc: 'For serious STR investors', features: ['Unlimited properties', 'Resolution Center + QR codes', 'Email alerts', 'PDF tax exports', 'Priority support'], cta: 'Start Pro Trial', highlight: true },
-              { name: 'Enterprise', price: 'Custom', period: 'contact us', desc: 'For property managers & funds', features: ['Everything in Pro', 'Multi-user access', 'API access', 'Custom ordinance tracking', 'Dedicated support'], cta: 'Contact Sales', highlight: false },
+              { name: 'Basic', price: '$29', period: 'per month', desc: 'Perfect for single-property hosts', features: ['Up to 3 properties', 'Document vault', 'Tax estimator', 'Compliance dashboard', 'Risk Score Engine'], cta: 'Get Started', highlight: false },
+{ name: 'Pro', price: '$79', period: 'per month', desc: 'For serious STR investors', features: ['Unlimited properties', 'Resolution Center + QR codes', 'Email alerts', 'PDF tax exports', 'Guest Packet Generator', 'White-label Reports', 'Priority support'], cta: 'Start Pro Trial', highlight: true },
+{ name: 'Enterprise', price: 'Custom', period: 'contact us', desc: 'For property managers & funds', features: ['Everything in Pro', 'Multi-user access', 'API access', 'Custom ordinance tracking', 'Dedicated support'], cta: 'Contact Sales', highlight: false },
             ].map((plan, i) => (
               <div key={i} style={{ ...s.pricingCard, ...(plan.highlight ? s.pricingCardHighlight : {}) }}>
                 {plan.highlight && <div style={s.pricingBadge}>Most Popular</div>}
