@@ -12,9 +12,10 @@ import { Settings } from './pages/Settings'
 import { ResolutionCenter } from './pages/ResolutionCenter'
 import { NeighborReport } from './pages/NeighborReport'
 import { TaxEstimator } from './pages/TaxEstimator'
+import { LandingPage } from './pages/LandingPage'
 
 function AppShell() {
-  const { isAuthenticated, isLoading, login } = useAuth()
+  const { isAuthenticated, isLoading } = useAuth()
 
   if (isLoading) {
     return (
@@ -25,35 +26,7 @@ function AppShell() {
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-background">
-        <div className="max-w-md w-full space-y-8 text-center animate-fade-in">
-          <div className="space-y-4">
-            <h1 className="text-5xl font-extrabold tracking-tight text-primary">LodgeLaw</h1>
-            <p className="text-muted-foreground text-lg">The turnkey STR compliance solution for Texas 2026.</p>
-          </div>
-          <div className="grid gap-4 bg-card p-8 rounded-2xl border border-border shadow-lg">
-            <div className="space-y-2 mb-4 text-left">
-              <h3 className="font-bold text-lg">Welcome back</h3>
-              <p className="text-sm text-muted-foreground">Sign in to manage your short-term rentals.</p>
-            </div>
-            <button
-              onClick={() => login()}
-              className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-xl font-bold hover:opacity-90 transition-all active:scale-[0.98] shadow-md shadow-primary/20"
-            >
-              Access Command Center
-            </button>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-4 justify-center">
-              <ShieldCheck className="w-3 h-3 text-accent" />
-              <span>Compliant with 2026 Austin & Houston Regulations</span>
-            </div>
-          </div>
-          <p className="text-[10px] text-muted-foreground px-8">
-            LodgeLaw is an operational assistant tool. Consult legal professionals for specific ordinance interpretations in your municipality.
-          </p>
-        </div>
-      </div>
-    )
+    return <LandingPage />
   }
 
   return (
@@ -117,13 +90,4 @@ declare module '@tanstack/react-router' {
 
 export default function App() {
   return <RouterProvider router={router} />
-}
-
-function ShieldCheck({ className }: { className?: string }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  )
 }
