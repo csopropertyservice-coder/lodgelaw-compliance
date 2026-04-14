@@ -94,20 +94,15 @@ All tables use **Row Level Security (RLS)** — users can only access their own 
 - A Vercel account (for deployment)
 
 ### Environment Variables
-Create a `.env.local` file in the project root:
-```env
+Create a .env.local file in the project root with these two lines:
 VITE_SUPABASE_URL=your_supabase_project_url
 VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
 
 ### Install & Run
-```bash
-npm install
-npm run dev
-```
+Run: npm install then npm run dev
 
 ### Database Setup
-Run the SQL schema in your Supabase SQL Editor — file is located in the repo as `supabase_schema.sql`.
+Run the SQL schema in your Supabase SQL Editor. File is located in the repo as supabase_schema.sql.
 
 ### Deploy to Vercel
 1. Connect your GitHub repo to Vercel
@@ -120,10 +115,10 @@ Run the SQL schema in your Supabase SQL Editor — file is located in the repo a
 ## 🤖 AI Features (Optional)
 
 Two features use AI and require an OpenAI API key:
-- **Property Compliance Analysis** — `src/hooks/usePropertyCompliance.ts`
-- **Ordinance Summaries** — `src/hooks/useOrdinanceSummary.ts`
+- Property Compliance Analysis — src/hooks/usePropertyCompliance.ts
+- Ordinance Summaries — src/hooks/useOrdinanceSummary.ts
 
-To enable, replace `blink.ai.generateText` calls with OpenAI API calls using model `gpt-4.1-mini`.
+To enable, replace blink.ai.generateText calls with OpenAI API calls using model gpt-4.1-mini.
 
 ---
 
@@ -138,3 +133,21 @@ To enable, replace `blink.ai.generateText` calls with OpenAI API calls using mod
 ---
 
 ## 📁 Project Structure
+
+src/pages — Full page components
+src/components — Reusable UI components
+src/hooks — Data fetching hooks
+src/lib — Utilities (Supabase client, tax calculator, etc.)
+src/blink — Legacy client stub (kept for compatibility)
+
+---
+
+## 📄 License
+
+This project is proprietary software. All rights reserved.
+
+---
+
+## ⚠️ Disclaimer
+
+LodgeLaw is an operational assistant tool. Always consult a licensed attorney for specific ordinance interpretations in your municipality.
