@@ -10,7 +10,7 @@ const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <BlinkUIProvider theme="linear" darkMode="system">
+        <BlinkUIProvider theme="linear" darkMode="light">
           <Toaster />
           <div className="flex w-full flex-1 flex-col min-h-0">
             <App />
