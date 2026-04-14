@@ -5,7 +5,7 @@ import {
   Progress, Badge, AutoForm, toast,
   Dialog, DialogContent, DialogHeader, DialogTitle
 } from '@blinkdotnew/ui'
-import { Plus, Home, MapPin, Calendar, ShieldCheck, Info, Sparkles, ChevronDown, ChevronRight, QrCode, Copy, X } from 'lucide-react'
+import { Plus, Home, MapPin, ShieldCheck, Sparkles, ChevronDown, ChevronRight, QrCode, X, Copy } from 'lucide-react'
 import { blink } from '../blink/client'
 import { useAuth } from '../hooks/useAuth'
 import { usePropertyCompliance } from '../hooks/usePropertyCompliance'
@@ -17,13 +17,12 @@ const propertySchema = z.object({
   address: z.string().min(1, 'Address is required'),
   zipCode: z.string().length(5, 'Zip code must be 5 digits'),
   licenseNumber: z.string().optional(),
-  hotRate: z.number().default(0.06),
+  hotRate: z.coerce.number().min(0).max(100).default(6),
   hoaRules: z.string().optional()
 })
 
 type Property = z.infer<typeof propertySchema> & { id: string; totalNightsRented: number; status: string }
 
-// QR Modal component
 function QRModal({ property, onClose }: { property: Property; onClose: () => void }) {
   const reportUrl = `${window.location.origin}/report/${property.id}`
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(reportUrl)}`
@@ -116,6 +115,7 @@ export function Properties() {
     try {
       await blink.db.properties.create({
         ...values,
+        hotRate: values.hotRate > 1 ? values.hotRate / 100 : values.hotRate,
         userId: user?.id,
         totalNightsRented: 0,
         status: 'active'
